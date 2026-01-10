@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Control Flow | Lecture Notes</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fafbfc;
+            --card: #ffffff;
+            --text: #24292f;
+            --text-muted: #57606a;
+            --border: #d8dee4;
+            --accent-blue: #0969da;
+            --accent-green: #1a7f37;
+            --accent-purple: #8250df;
+            --accent-orange: #bf8700;
+            --code-bg: #f6f8fa;
+            --highlight: #fff8c5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            font-size: 17px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 80px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 3.2em;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+
+        .header .subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.4em;
+            font-weight: 300;
+            font-style: italic;
+        }
+
+        .java-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 12px 24px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .java-badge svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .java-badge span {
+            color: white;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        /* Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 40px;
+        }
+
+        /* Part Headers */
+        .part-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .part-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .part-icon svg {
+            width: 36px;
+            height: 36px;
+        }
+
+        .part-icon.decisions {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        }
+
+        .part-icon.loops {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .part-header h2 {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .part-header p {
+            color: var(--text-muted);
+            margin-top: 4px;
+            font-size: 1.05em;
+        }
+
+        /* Section Cards */
+        .section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .section-number {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-blue);
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1em;
+            flex-shrink: 0;
+        }
+
+        .section-number.green { background: var(--accent-green); }
+        .section-number.purple { background: var(--accent-purple); }
+        .section-number.orange { background: var(--accent-orange); }
+
+        .section-title h3 {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .section-title p {
+            color: var(--text-muted);
+            font-size: 0.95em;
+        }
+
+        /* Info Boxes */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .info-box {
+            background: var(--code-bg);
+            border-radius: 8px;
+            padding: 16px 20px;
+        }
+
+        .info-box.full {
+            grid-column: 1 / -1;
+        }
+
+        .info-label {
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .info-value {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        /* Keyword Pills */
+        .keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .keyword {
+            background: #ddf4ff;
+            color: #0969da;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .keyword.green {
+            background: #dafbe1;
+            color: #1a7f37;
+        }
+
+        .keyword.purple {
+            background: #fbefff;
+            color: #8250df;
+        }
+
+        /* Code Examples */
+        .code-example {
+            margin-top: 28px;
+        }
+
+        .code-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #1f2328;
+            color: #7d8590;
+            padding: 10px 16px;
+            border-radius: 8px 8px 0 0;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .code-label svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .code-block {
+            background: #1f2328;
+            border-radius: 0 8px 8px 8px;
+            padding: 24px;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.9em;
+            line-height: 1.7;
+        }
+
+        .code-block code {
+            color: #e6edf3;
+        }
+
+        .code-block .keyword { 
+            color: #ff7b72; 
+            background: none;
+            padding: 0;
+            font-size: inherit;
+        }
+        .code-block .type { color: #79c0ff; }
+        .code-block .string { color: #a5d6ff; }
+        .code-block .number { color: #79c0ff; }
+        .code-block .comment { color: #8b949e; font-style: italic; }
+        .code-block .method { color: #d2a8ff; }
+        .code-block .operator { color: #ff7b72; }
+
+        /* Diagram */
+        .diagram {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 1px solid #bae6fd;
+            border-radius: 12px;
+            padding: 32px;
+            margin: 28px 0;
+            text-align: center;
+        }
+
+        .diagram-title {
+            font-weight: 600;
+            color: #0369a1;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .flow-box {
+            background: white;
+            border: 2px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            font-weight: 500;
+            color: #0369a1;
+        }
+
+        .flow-arrow {
+            color: #0ea5e9;
+            font-size: 1.4em;
+        }
+
+        /* Warning Box */
+        .warning {
+            background: #fff8c5;
+            border-left: 4px solid #bf8700;
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 24px 0;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .warning svg {
+            width: 20px;
+            height: 20px;
+            color: #9a6700;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .warning-content {
+            color: #6c5300;
+        }
+
+        .warning-content strong {
+            color: #4d3800;
+        }
+
+        /* Comparison Table */
+        .comparison-section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px;
+            margin-top: 48px;
+        }
+
+        .comparison-section h2 {
+            font-size: 1.6em;
+            margin-bottom: 8px;
+        }
+
+        .comparison-section > p {
+            color: var(--text-muted);
+            margin-bottom: 28px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95em;
+        }
+
+        .comparison-table th {
+            background: #f6f8fa;
+            text-align: left;
+            padding: 14px 16px;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .comparison-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table .feature {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .tag.high { background: #dafbe1; color: #1a7f37; }
+        .tag.medium { background: #fff8c5; color: #9a6700; }
+        .tag.low { background: #ffebe9; color: #cf222e; }
+        .tag.excellent { background: #ddf4ff; color: #0969da; }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-size: 0.9em;
+        }
+
+        /* Responsive */
+        @media (max-width: 700px) {
+            .header { padding: 50px 20px; }
+            .header h1 { font-size: 2.2em; }
+            .container { padding: 30px 20px; }
+            .section { padding: 24px; }
+            .info-grid { grid-template-columns: 1fr; }
+            .flow-diagram { flex-direction: column; }
+            .flow-arrow { transform: rotate(90deg); }
+            .comparison-table { font-size: 0.85em; }
+        }
+
+        /* Divider */
+        .divider {
+            height: 60px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="java-badge">
+                <svg viewBox="0 0 24 24" fill="white">
+                    <path d="M8.851 18.56s-.917.534.653.714c1.902.218 2.874.187 4.969-.211 0 0 .552.346 1.321.646-4.699 2.013-10.633-.118-6.943-1.149m-.575-2.627s-1.028.761.542.924c2.032.209 3.636.227 6.413-.308 0 0 .384.389.987.602-5.679 1.661-12.007.13-7.942-1.218m4.84-4.458c1.158 1.333-.304 2.533-.304 2.533s2.939-1.518 1.589-3.418c-1.261-1.772-2.228-2.652 3.007-5.688 0-.001-8.216 2.051-4.292 6.573m6.223 9.072s.679.559-.747.991c-2.712.822-11.288 1.069-13.669.033-.856-.373.75-.89 1.254-.998.527-.114.828-.093.828-.093-.953-.671-6.156 1.317-2.643 1.887 9.58 1.553 17.462-.7 14.977-1.82M9.292 13.21s-4.362 1.036-1.544 1.412c1.189.159 3.561.123 5.77-.062 1.806-.152 3.618-.477 3.618-.477s-.637.272-1.098.587c-4.429 1.165-12.986.623-10.522-.568 2.082-1.006 3.776-.892 3.776-.892m7.824 4.374c4.503-2.34 2.421-4.589.968-4.285-.355.074-.515.138-.515.138s.132-.207.385-.297c2.875-1.011 5.086 2.981-.928 4.562 0-.001.07-.062.09-.118M11.094.703s2.494 2.494-2.365 6.333c-3.896 3.077-.889 4.832 0 6.836-2.274-2.053-3.943-3.858-2.824-5.539 1.644-2.469 6.197-3.665 5.189-7.63"/>
+                </svg>
+                <span>Core Java</span>
+            </div>
+            <h1>Java Control Flow</h1>
+            <p class="subtitle">Mastering Decision Making and Iteration</p>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- Part 1: Decision Making -->
+        <div class="part-header">
+            <div class="part-icon decisions">
+                <svg fill="white" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+            </div>
+            <div>
+                <h2>Part 1: Decision Making</h2>
+                <p>Programs are not static; they need to make choices based on data. In Java, we use <strong>If-Else</strong> for complex logic and <strong>Switch</strong> for specific value matching.</p>
+            </div>
+        </div>
+
+        <!-- Section 1: If-Else -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">1</div>
+                <div class="section-title">
+                    <h3>If-Else Statements</h3>
+                    <p>The most fundamental decision-making tool. Evaluates a boolean expression (True or False).</p>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-box">
+                    <div class="info-label">Logic</div>
+                    <div class="info-value">"If condition A is true, do this. Otherwise, do that."</div>
+                </div>
+                <div class="info-box">
+                    <div class="info-label">Best Used For</div>
+                    <div class="info-value">Ranges (e.g., <code>score > 50</code>), boolean checks, complex logic operators</div>
+                </div>
+            </div>
+
+            <div class="keywords">
+                <span class="keyword">if</span>
+                <span class="keyword">else</span>
+                <span class="keyword">else if</span>
+                <span class="keyword">&&</span>
+                <span class="keyword">||</span>
+            </div>
+
+            <div class="code-example">
+                <div class="code-label">
+                    <svg fill="currentColor" viewBox="0 0 16 16"><path d="M5.854 4.854a.5.5 0 1 0-.708-.708l-3.5 3.5a.5.5 0 0 0 0 .708l3.5 3.5a.5.5 0 0 0 .708-.708L2.707 8l3.147-3.146zm4.292 0a.5.5 0 0 1 .708-.708l3.5 3.5a.5.5 0 0 1 0 .708l-3.5 3.5a.5.5 0 0 1-.708-.708L13.293 8l-3.147-3.146z"/></svg>
+                    The Temperature Check
+                </div>
+                <div class="code-block">
+<code><span class="type">int</span> temperature = <span class="number">30</span>;
+
+<span class="keyword">if</span> (temperature > <span class="number">30</span>) {
+    <span class="comment">// This runs if temp is 31 or higher</span>
+    System.out.<span class="method">println</span>(<span class="string">"It's hot outside! Wear shorts."</span>);
+} <span class="keyword">else if</span> (temperature >= <span class="number">20</span>) {
+    <span class="comment">// This runs if temp is between 20 and 30</span>
+    System.out.<span class="method">println</span>(<span class="string">"It's nice. Wear a t-shirt."</span>);
+} <span class="keyword">else</span> {
+    <span class="comment">// This runs if none of the above are true (temp < 20)</span>
+    System.out.<span class="method">println</span>(<span class="string">"It's cold. Bring a jacket."</span>);
+}</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Switch -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number green">2</div>
+                <div class="section-title">
+                    <h3>Switch Statements</h3>
+                    <p>A cleaner alternative to if-else when comparing a <strong>single variable</strong> against a list of known values.</p>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-box">
+                    <div class="info-label">Logic</div>
+                    <div class="info-value">"Check this variable. Does it equal Case 1? Case 2? Case 3?"</div>
+                </div>
+                <div class="info-box">
+                    <div class="info-label">Best Used For</div>
+                    <div class="info-value">Menus, days of the week, specific ID codes</div>
+                </div>
+            </div>
+
+            <div class="keywords">
+                <span class="keyword green">switch</span>
+                <span class="keyword green">case</span>
+                <span class="keyword green">break</span>
+                <span class="keyword green">default</span>
+            </div>
+
+            <div class="info-grid" style="margin-top: 24px;">
+                <div class="info-box full">
+                    <div class="info-label">Critical Keywords Explained</div>
+                    <div class="info-value">
+                        <strong>case:</strong> The value we are checking against.<br>
+                        <strong>break:</strong> Stops the code from "falling through" to the next case.<br>
+                        <strong>default:</strong> Runs if no cases match (like the else block).
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-example">
+                <div class="code-label">
+                    <svg fill="currentColor" viewBox="0 0 16 16"><path d="M5.854 4.854a.5.5 0 1 0-.708-.708l-3.5 3.5a.5.5 0 0 0 0 .708l3.5 3.5a.5.5 0 0 0 .708-.708L2.707 8l3.147-3.146zm4.292 0a.5.5 0 0 1 .708-.708l3.5 3.5a.5.5 0 0 1 0 .708l-3.5 3.5a.5.5 0 0 1-.708-.708L13.293 8l-3.147-3.146z"/></svg>
+                    The Vending Machine
+                </div>
+                <div class="code-block">
+<code><span class="type">int</span> selection = <span class="number">2</span>;
+
+<span class="keyword">switch</span> (selection) {
+    <span class="keyword">case</span> <span class="number">1</span>:
+        System.out.<span class="method">println</span>(<span class="string">"Dispensing: Coke"</span>);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="number">2</span>:
+        System.out.<span class="method">println</span>(<span class="string">"Dispensing: Pepsi"</span>);
+        <span class="keyword">break</span>; <span class="comment">// vital to stop execution here!</span>
+    <span class="keyword">case</span> <span class="number">3</span>:
+        System.out.<span class="method">println</span>(<span class="string">"Dispensing: Water"</span>);
+        <span class="keyword">break</span>;
+    <span class="keyword">default</span>:
+        System.out.<span class="method">println</span>(<span class="string">"Invalid Selection"</span>);
+}</code>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Part 2: Iteration -->
+        <div class="part-header">
+            <div class="part-icon loops">
+                <svg fill="white" viewBox="0 0 24 24">
+                    <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
+                </svg>
+            </div>
+            <div>
+                <h2>Part 2: Iteration (Loops)</h2>
+                <p>Loops allow you to repeat a block of code multiple times without rewriting it.</p>
+            </div>
+        </div>
+
+        <!-- Section 3: For Loops -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number purple">3</div>
+                <div class="section-title">
+                    <h3>For Loops</h3>
+                    <p>The standard loop when you know <strong>exactly how many times</strong> you want to iterate.</p>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-box full">
+                    <div class="info-label">Logic</div>
+                    <div class="info-value">"Start at X; Keep going while Y is true; Change X by Z every time."</div>
+                </div>
+            </div>
+
+            <div class="diagram">
+                <div class="diagram-title">For Loop Structure</div>
+                <div class="flow-diagram">
+                    <div class="flow-box">for (</div>
+                    <div class="flow-box" style="background: #dbeafe;">Initialization</div>
+                    <div class="flow-box">;</div>
+                    <div class="flow-box" style="background: #dcfce7;">Condition</div>
+                    <div class="flow-box">;</div>
+                    <div class="flow-box" style="background: #fef3c7;">Update</div>
+                    <div class="flow-box">)</div>
+                </div>
+            </div>
+
+            <div class="keywords">
+                <span class="keyword purple">for</span>
+                <span class="keyword purple">i++</span>
+                <span class="keyword purple">i--</span>
+                <span class="keyword purple">i += n</span>
+            </div>
+
+            <div class="code-example">
+                <div class="code-label">
+                    <svg fill="currentColor" viewBox="0 0 16 16"><path d="M5.854 4.854a.5.5 0 1 0-.708-.708l-3.5 3.5a.5.5 0 0 0 0 .708l3.5 3.5a.5.5 0 0 0 .708-.708L2.707 8l3.147-3.146zm4.292 0a.5.5 0 0 1 .708-.708l3.5 3.5a.5.5 0 0 1 0 .708l-3.5 3.5a.5.5 0 0 1-.708-.708L13.293 8l-3.147-3.146z"/></svg>
+                    The Countdown
+                </div>
+                <div class="code-block">
+<code><span class="comment">// Logic breakdown:</span>
+<span class="comment">// 1. int i = 10 (Start at 10)</span>
+<span class="comment">// 2. i > 0      (Run as long as i is positive)</span>
+<span class="comment">// 3. i--        (Decrease i by 1 after every loop)</span>
+
+<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">10</span>; i > <span class="number">0</span>; i--) {
+    System.out.<span class="method">println</span>(<span class="string">"T-minus: "</span> + i);
+}
+System.out.<span class="method">println</span>(<span class="string">"Blast off!"</span>);</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: While Loops -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number orange">4</div>
+                <div class="section-title">
+                    <h3>While Loops</h3>
+                    <p>Used when the number of iterations is <strong>unknown</strong>. It relies on a state or condition.</p>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-box full">
+                    <div class="info-label">Logic</div>
+                    <div class="info-value">"Keep doing this <strong>while</strong> the condition is true."</div>
+                </div>
+            </div>
+
+            <div class="warning">
+                <svg fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                </svg>
+                <div class="warning-content">
+                    <strong>Warning:</strong> You must manually update the variable inside the loop, or you will create an <em>Infinite Loop</em> that crashes your program.
+                </div>
+            </div>
+
+            <div class="keywords">
+                <span class="keyword" style="background: #ffedd5; color: #c2410c;">while</span>
+                <span class="keyword" style="background: #ffedd5; color: #c2410c;">do-while</span>
+                <span class="keyword" style="background: #ffedd5; color: #c2410c;">break</span>
+                <span class="keyword" style="background: #ffedd5; color: #c2410c;">continue</span>
+            </div>
+
+            <div class="code-example">
+                <div class="code-label">
+                    <svg fill="currentColor" viewBox="0 0 16 16"><path d="M5.854 4.854a.5.5 0 1 0-.708-.708l-3.5 3.5a.5.5 0 0 0 0 .708l3.5 3.5a.5.5 0 0 0 .708-.708L2.707 8l3.147-3.146zm4.292 0a.5.5 0 0 1 .708-.708l3.5 3.5a.5.5 0 0 1 0 .708l-3.5 3.5a.5.5 0 0 1-.708-.708L13.293 8l-3.147-3.146z"/></svg>
+                    Loading a File
+                </div>
+                <div class="code-block">
+<code><span class="type">boolean</span> fileIsLoading = <span class="keyword">true</span>;
+<span class="type">int</span> percentLoaded = <span class="number">0</span>;
+
+<span class="keyword">while</span> (fileIsLoading) {
+    System.out.<span class="method">println</span>(<span class="string">"Loading... "</span> + percentLoaded + <span class="string">"%"</span>);
+    
+    percentLoaded += <span class="number">25</span>; <span class="comment">// Simulate progress</span>
+    
+    <span class="comment">// Check if finished</span>
+    <span class="keyword">if</span> (percentLoaded >= <span class="number">100</span>) {
+        fileIsLoading = <span class="keyword">false</span>; <span class="comment">// This stops the loop!</span>
+    }
+}
+System.out.<span class="method">println</span>(<span class="string">"Download Complete."</span>);</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="comparison-section">
+            <h2>📊 Quick Comparison: Which to Choose?</h2>
+            <p>Use this table as a quick reference when deciding which control flow statement fits your needs.</p>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>If-Else</th>
+                        <th>Switch</th>
+                        <th>For Loop</th>
+                        <th>While Loop</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="feature">Primary Use</td>
+                        <td>Complex decisions</td>
+                        <td>Simple value matching</td>
+                        <td>Fixed repetitions</td>
+                        <td>State-based repetitions</td>
+                    </tr>
+                    <tr>
+                        <td class="feature">Flexibility</td>
+                        <td><span class="tag high">High</span><br><small>ranges, logic</small></td>
+                        <td><span class="tag low">Low</span><br><small>exact matches</small></td>
+                        <td><span class="tag medium">Medium</span></td>
+                        <td><span class="tag high">High</span></td>
+                    </tr>
+                    <tr>
+                        <td class="feature">Readability</td>
+                        <td><span class="tag excellent">Good</span></td>
+                        <td><span class="tag excellent">Excellent</span><br><small>for menus</small></td>
+                        <td><span class="tag excellent">Excellent</span><br><small>for counting</small></td>
+                        <td><span class="tag excellent">Good</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <p>Java Control Flow — Lecture Notes</p>
+    </footer>
+
+</body>
+</html>

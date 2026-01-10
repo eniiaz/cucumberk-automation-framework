@@ -20,8 +20,17 @@ public class DashboardPage extends BasePage {
     @FindBy(xpath = "//a[contains(text(), 'Calendar')] | //button[contains(text(), 'Calendar')]")
     private WebElement calendarNavLink;
 
-    @FindBy(xpath = "//a[contains(text(), 'Reservations')] | //button[contains(text(), 'Reservations')]")
+    @FindBy(xpath = "//a[contains(text(), 'Reservations')] | //nav//a[contains(@href, '/reservations')]")
     private WebElement reservationsNavLink;
+
+    @FindBy(xpath = "//a[contains(text(), 'Customers')] | //nav//a[contains(@href, '/customers')]")
+    private WebElement customersNavLink;
+
+    @FindBy(xpath = "//a[contains(text(), 'Vehicles')] | //nav//a[contains(@href, '/vehicles')]")
+    private WebElement vehiclesNavLink;
+
+    @FindBy(xpath = "//button[contains(text(), 'Logout')]")
+    private WebElement logoutButton;
 
     // ==================== Page Verifications ====================
 
@@ -52,6 +61,43 @@ public class DashboardPage extends BasePage {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    // ==================== Navigation Methods ====================
+
+    /**
+     * Navigate to Reservations page
+     */
+    public void navigateToReservations() {
+        waitForClickability(reservationsNavLink);
+        click(reservationsNavLink);
+        logger.info("Navigated to Reservations page");
+    }
+
+    /**
+     * Navigate to Customers page
+     */
+    public void navigateToCustomers() {
+        waitForClickability(customersNavLink);
+        click(customersNavLink);
+        logger.info("Navigated to Customers page");
+    }
+
+    /**
+     * Navigate to Vehicles page
+     */
+    public void navigateToVehicles() {
+        waitForClickability(vehiclesNavLink);
+        click(vehiclesNavLink);
+        logger.info("Navigated to Vehicles page");
+    }
+
+    /**
+     * Click logout button
+     */
+    public void logout() {
+        click(logoutButton);
+        logger.info("Clicked logout button");
     }
 
     @Override

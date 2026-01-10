@@ -18,8 +18,8 @@ import org.junit.runner.RunWith;
         },
         features = "src/test/resources/features",
         glue = "com.automation.stepdefinitions",
-        tags = "@MC-157",
-        dryRun = true
+        tags = "@this",
+        dryRun = false
 )
 public class CukesRunner {
 
