@@ -22,7 +22,7 @@ public class AllureReport {
         System.out.println("\n" +
                 "╔══════════════════════════════════════════════════════════════╗\n" +
                 "║                                                              ║\n" +
-                "║           MKF CRM Automation Test Framework                  ║\n" +
+                "║           Nomad TMS Automation Test Framework                ║\n" +
                 "║                                                              ║\n" +
                 "║              Starting Test Execution...                      ║\n" +
                 "║                                                              ║\n" +
